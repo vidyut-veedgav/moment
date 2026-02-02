@@ -1,0 +1,140 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// Enums
+enum MomentStatus {
+  PENDING
+  BOTH_RESPONDED
+  REVEALED
+}
+
+enum ResponseStatus {
+  PENDING
+  RESPONDED
+}
+
+// Models
+model Partner {
+  partner_id    String   @id @default(uuid()) @db.Uuid
+  auth_id       String   @unique // Links to Supabase Auth user
+  first_name    String
+  last_name     String
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  // Relations
+  partnerships_as_partner1 Partnership[] @relation("Partner1")
+  partnerships_as_partner2 Partnership[] @relation("Partner2")
+  responses                Response[]
+  reveal_statuses          RevealStatus[]
+
+  @@map("partners")
+}
+
+model Partnership {
+  partnership_id String   @id @default(uuid()) @db.Uuid
+  partner1_id    String   @db.Uuid
+  partner2_id    String   @db.Uuid
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  // Relations
+  partner1           Partner             @relation("Partner1", fields: [partner1_id], references: [partner_id], onDelete: Cascade)
+  partner2           Partner             @relation("Partner2", fields: [partner2_id], references: [partner_id], onDelete: Cascade)
+  moments            Moment[]
+  partnership_prompts PartnershipPrompt[]
+
+  @@unique([partner1_id, partner2_id])
+  @@index([partner1_id])
+  @@index([partner2_id])
+  @@map("partnerships")
+}
+
+model Prompt {
+  prompt_id  String   @id @default(uuid()) @db.Uuid
+  content    String   @db.Text
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  // Relations
+  moments             Moment[]
+  partnership_prompts PartnershipPrompt[]
+
+  @@map("prompts")
+}
+
+model PartnershipPrompt {
+  partnership_id String   @db.Uuid
+  prompt_id      String   @db.Uuid
+  is_default     Boolean  @default(false)
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  // Relations
+  partnership Partnership @relation(fields: [partnership_id], references: [partnership_id], onDelete: Cascade)
+  prompt      Prompt      @relation(fields: [prompt_id], references: [prompt_id], onDelete: Cascade)
+
+  @@id([partnership_id, prompt_id])
+  @@index([partnership_id])
+  @@map("partnership_prompts")
+}
+
+model Moment {
+  moment_id      String       @id @default(uuid()) @db.Uuid
+  prompt_id      String       @db.Uuid
+  partnership_id String       @db.Uuid
+  status         MomentStatus @default(PENDING)
+  created_at     DateTime     @default(now())
+  updated_at     DateTime     @updatedAt
+
+  // Relations
+  prompt          Prompt         @relation(fields: [prompt_id], references: [prompt_id], onDelete: Cascade)
+  partnership     Partnership    @relation(fields: [partnership_id], references: [partnership_id], onDelete: Cascade)
+  responses       Response[]
+  reveal_statuses RevealStatus[]
+
+  @@index([partnership_id])
+  @@index([created_at])
+  @@map("moments")
+}
+
+model Response {
+  response_id  String         @id @default(uuid()) @db.Uuid
+  responder_id String         @db.Uuid
+  moment_id    String         @db.Uuid
+  content      String         @db.Text
+  status       ResponseStatus @default(PENDING)
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt
+
+  // Relations
+  responder Partner @relation(fields: [responder_id], references: [partner_id], onDelete: Cascade)
+  moment    Moment  @relation(fields: [moment_id], references: [moment_id], onDelete: Cascade)
+
+  @@unique([responder_id, moment_id]) // One response per partner per moment
+  @@index([moment_id])
+  @@map("responses")
+}
+
+model RevealStatus {
+  partner_id   String   @db.Uuid
+  moment_id    String   @db.Uuid
+  has_revealed Boolean  @default(false)
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  // Relations
+  partner Partner @relation(fields: [partner_id], references: [partner_id], onDelete: Cascade)
+  moment  Moment  @relation(fields: [moment_id], references: [moment_id], onDelete: Cascade)
+
+  @@id([partner_id, moment_id])
+  @@index([moment_id])
+  @@map("reveal_statuses")
+}
