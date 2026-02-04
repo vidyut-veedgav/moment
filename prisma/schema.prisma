@@ -109,7 +109,7 @@ model Response {
   response_id  String         @id @default(uuid()) @db.Uuid
   responder_id String         @db.Uuid
   moment_id    String         @db.Uuid
-  content      String         @db.Text
+  content      String?        @db.Text
   status       ResponseStatus @default(PENDING)
   created_at   DateTime       @default(now())
   updated_at   DateTime       @updatedAt

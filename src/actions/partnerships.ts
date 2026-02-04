@@ -3,28 +3,52 @@
 import { getPartner } from "@/src/actions/auth";
 import { prisma } from "@/src/lib/prisma/prisma";
 
-export async function createPartnership(partner2Id: string) {
+export async function generateInviteLink() {
   const partner = await getPartner();
   if (!partner) throw new Error("Not authenticated");
 
-  // Check both orderings -- the unique constraint on the schema is only
-  // (partner1_id, partner2_id), so (A,B) and (B,A) would both be allowed by the DB.
-  const existing = await prisma.partnership.findFirst({
+  return `${process.env.NEXT_PUBLIC_APP_URL}/invite/${partner.partner_id}`;
+}
+
+export async function acceptInvite(inviterPartnerId: string) {
+  const partner = await getPartner();
+  if (!partner) throw new Error("Not authenticated");
+
+  if (partner.partner_id === inviterPartnerId) {
+    throw new Error("You cannot invite yourself");
+  }
+
+  // Verify inviter exists and has no existing partnership
+  const inviter = await prisma.partner.findUnique({
+    where: { partner_id: inviterPartnerId },
+  });
+  if (!inviter) throw new Error("Invalid invite link");
+
+  const inviterPartnership = await prisma.partnership.findFirst({
     where: {
       OR: [
-        { partner1_id: partner.partner_id, partner2_id: partner2Id },
-        { partner1_id: partner2Id, partner2_id: partner.partner_id },
+        { partner1_id: inviterPartnerId },
+        { partner2_id: inviterPartnerId },
       ],
     },
-    include: { partner1: true, partner2: true },
   });
+  if (inviterPartnership) throw new Error("This invite is no longer valid");
 
-  if (existing) return existing;
+  // Current user must not already have a partnership
+  const myPartnership = await prisma.partnership.findFirst({
+    where: {
+      OR: [
+        { partner1_id: partner.partner_id },
+        { partner2_id: partner.partner_id },
+      ],
+    },
+  });
+  if (myPartnership) throw new Error("You already have a partner");
 
   return prisma.partnership.create({
     data: {
-      partner1_id: partner.partner_id,
-      partner2_id: partner2Id,
+      partner1_id: inviterPartnerId,
+      partner2_id: partner.partner_id,
     },
     include: {
       partner1: true,
