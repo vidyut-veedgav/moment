@@ -22,16 +22,16 @@ enum ResponseStatus {
 
 // Models
 model Partner {
-  partner_id    String   @id @default(uuid()) @db.Uuid
-  auth_id       String   @unique // Links to Supabase Auth user
-  first_name    String
-  last_name     String
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
+  partner_id String   @id @default(uuid()) @db.Uuid
+  auth_id    String   @unique // Links to Supabase Auth user
+  first_name String
+  last_name  String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   // Relations
-  partnerships_as_partner1 Partnership[] @relation("Partner1")
-  partnerships_as_partner2 Partnership[] @relation("Partner2")
+  partnerships_as_partner1 Partnership[]  @relation("Partner1")
+  partnerships_as_partner2 Partnership[]  @relation("Partner2")
   responses                Response[]
   reveal_statuses          RevealStatus[]
 
@@ -46,9 +46,9 @@ model Partnership {
   updated_at     DateTime @updatedAt
 
   // Relations
-  partner1           Partner             @relation("Partner1", fields: [partner1_id], references: [partner_id], onDelete: Cascade)
-  partner2           Partner             @relation("Partner2", fields: [partner2_id], references: [partner_id], onDelete: Cascade)
-  moments            Moment[]
+  partner1            Partner             @relation("Partner1", fields: [partner1_id], references: [partner_id], onDelete: Cascade)
+  partner2            Partner             @relation("Partner2", fields: [partner2_id], references: [partner_id], onDelete: Cascade)
+  moments             Moment[]
   partnership_prompts PartnershipPrompt[]
 
   @@unique([partner1_id, partner2_id])
