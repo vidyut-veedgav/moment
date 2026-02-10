@@ -1,7 +1,7 @@
 "use server";
 
 import { getPartner } from "@/src/actions/auth";
-import { prisma } from "@/src/lib/prisma/prisma";
+import { prisma } from "@/lib/prisma/prisma";
 
 export async function submitResponse(momentId: string, content: string) {
   const partner = await getPartner();

@@ -1,8 +1,8 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { createClient } from "@/src/lib/supabase/server";
-import { prisma } from "@/src/lib/prisma/prisma";
+import { createClient } from "@/lib/supabase/server";
+import { prisma } from "@/lib/prisma/prisma";
 
 export async function signIn() {
   const supabase = await createClient();

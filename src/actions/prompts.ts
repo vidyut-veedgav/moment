@@ -1,7 +1,7 @@
 "use server";
 
 import { getPartner } from "@/src/actions/auth";
-import { prisma } from "@/src/lib/prisma/prisma";
+import { prisma } from "@/lib/prisma/prisma";
 
 const DEFAULT_PROMPTS = [
   "What made you smile today?",
