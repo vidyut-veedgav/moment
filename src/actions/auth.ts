@@ -37,3 +37,10 @@ export async function getPartner() {
     where: { auth_id: user.id },
   });
 }
+
+export async function getPartnerById(partnerId: string) {
+  return prisma.partner.findUnique({
+    where: { partner_id: partnerId },
+    select: { partner_id: true, first_name: true, last_name: true },
+  });
+}

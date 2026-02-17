@@ -2,6 +2,7 @@
 
 import { getPartner } from "@/src/actions/auth";
 import { prisma } from "@/lib/prisma/prisma";
+import { seedDefaultPrompts } from "@/src/actions/prompts";
 
 export async function generateInviteLink() {
   const partner = await getPartner();
@@ -45,7 +46,7 @@ export async function acceptInvite(inviterPartnerId: string) {
   });
   if (myPartnership) throw new Error("You already have a partner");
 
-  return prisma.partnership.create({
+  const partnership = await prisma.partnership.create({
     data: {
       partner1_id: inviterPartnerId,
       partner2_id: partner.partner_id,
@@ -55,6 +56,10 @@ export async function acceptInvite(inviterPartnerId: string) {
       partner2: true,
     },
   });
+
+  await seedDefaultPrompts(partnership.partnership_id);
+
+  return partnership;
 }
 
 export async function getPartnership(partnershipId: string) {

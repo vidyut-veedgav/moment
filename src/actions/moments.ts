@@ -3,6 +3,46 @@
 import { getPartner } from "@/src/actions/auth";
 import { prisma } from "@/lib/prisma/prisma";
 
+export async function getTodaysMoment(partnershipId: string) {
+  const now = new Date();
+  const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const endOfDay = new Date(startOfDay.getTime() + 24 * 60 * 60 * 1000);
+
+  const existing = await prisma.moment.findFirst({
+    where: {
+      partnership_id: partnershipId,
+      created_at: { gte: startOfDay, lt: endOfDay },
+    },
+    include: {
+      prompt: true,
+      responses: { include: { responder: true } },
+      reveal_statuses: true,
+    },
+  });
+
+  if (existing) return existing;
+
+  // Find next unused prompt
+  const usedPromptIds = await prisma.moment.findMany({
+    where: { partnership_id: partnershipId },
+    select: { prompt_id: true },
+  });
+  const usedIds = usedPromptIds.map((m) => m.prompt_id);
+
+  const nextPrompt = await prisma.partnershipPrompt.findFirst({
+    where: {
+      partnership_id: partnershipId,
+      prompt_id: { notIn: usedIds.length > 0 ? usedIds : undefined },
+    },
+    include: { prompt: true },
+    orderBy: { created_at: "asc" },
+  });
+
+  if (!nextPrompt) return null;
+
+  return createMoment(partnershipId, nextPrompt.prompt_id);
+}
+
 export async function createMoment(partnershipId: string, promptId: string) {
   const partner = await getPartner();
   if (!partner) throw new Error("Not authenticated");
