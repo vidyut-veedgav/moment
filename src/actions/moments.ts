@@ -107,6 +107,41 @@ export async function getMoments(partnershipId: string) {
   });
 }
 
+export async function resetMoment(momentId: string) {
+  const partner = await getPartner();
+  if (!partner) throw new Error("Not authenticated");
+
+  return prisma.$transaction(async (tx) => {
+    const moment = await tx.moment.findUnique({
+      where: { moment_id: momentId },
+      include: { responses: true },
+    });
+    if (!moment) throw new Error("Moment not found");
+
+    // Verify caller belongs to this moment's partnership
+    const partnership = await tx.partnership.findFirst({
+      where: {
+        partnership_id: moment.partnership_id,
+        OR: [
+          { partner1_id: partner.partner_id },
+          { partner2_id: partner.partner_id },
+        ],
+      },
+    });
+    if (!partnership) throw new Error("Not authorized");
+
+    await tx.revealStatus.deleteMany({ where: { moment_id: momentId } });
+    await tx.response.updateMany({
+      where: { moment_id: momentId },
+      data: { status: "PENDING", content: null },
+    });
+    await tx.moment.update({
+      where: { moment_id: momentId },
+      data: { status: "PENDING" },
+    });
+  });
+}
+
 export async function getMoment(momentId: string) {
   return prisma.moment.findUnique({
     where: { moment_id: momentId },

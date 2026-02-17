@@ -11,10 +11,12 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { submitResponse } from "@/src/actions/responses";
 import { revealMoment } from "@/src/actions/reveals";
+import { resetMoment } from "@/src/actions/moments";
+import RealtimeRefresh from "@/src/app/home/realtime-refresh";
 import { signOut } from "@/src/actions/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type HomeState =
   | "no-moment"
@@ -58,6 +60,13 @@ export default function HomePage({
   const [responseText, setResponseText] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Reset loading once the server has responded and state has changed.
+  // router.refresh() is fire-and-forget, so we can't await it directly —
+  // this effect fires only after the component re-renders with new props.
+  useEffect(() => {
+    setLoading(false);
+  }, [state]);
+
   async function handleSubmit() {
     if (!responseText.trim()) return;
     setLoading(true);
@@ -81,8 +90,20 @@ export default function HomePage({
     }
   }
 
+  async function handleReset() {
+    setLoading(true);
+    try {
+      await resetMoment(momentId);
+      router.refresh();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to reset");
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="flex min-h-screen flex-col">
+      {state !== "no-moment" && <RealtimeRefresh momentId={momentId} />}
       <nav className="flex items-center justify-between border-b px-6 py-4">
         <Link href="/home" className="text-xl font-bold">
           Moment
@@ -182,6 +203,19 @@ export default function HomePage({
                 </CardContent>
               </Card>
             </div>
+          </div>
+        )}
+        {state !== "no-moment" && (
+          <div className="mt-8 text-center">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-xs text-muted-foreground"
+              onClick={handleReset}
+              disabled={loading}
+            >
+              [DEV] Reset Moment
+            </Button>
           </div>
         )}
       </main>
