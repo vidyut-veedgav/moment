@@ -58,15 +58,13 @@ export default async function HomePageRoute() {
   }
 
   // Determine state
-  let state: "no-moment" | "needs-response" | "waiting-for-partner" | "ready-to-reveal" | "waiting-for-partner-reveal" | "revealed";
+  let state: "no-moment" | "needs-response" | "waiting-for-partner" | "ready-to-reveal" | "revealed";
   if (!myResponse || myResponse.status === "PENDING") {
     state = "needs-response";
   } else if (moment.status === "PENDING") {
     state = "waiting-for-partner";
-  } else if (moment.status === "REVEALED") {
-    state = "revealed";
   } else if (myRevealStatus && myRevealStatus.has_revealed) {
-    state = "waiting-for-partner-reveal";
+    state = "revealed";
   } else {
     state = "ready-to-reveal";
   }

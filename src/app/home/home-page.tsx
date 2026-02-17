@@ -21,7 +21,6 @@ type HomeState =
   | "needs-response"
   | "waiting-for-partner"
   | "ready-to-reveal"
-  | "waiting-for-partner-reveal"
   | "revealed";
 
 interface ResponseData {
@@ -156,22 +155,6 @@ export default function HomePage({
               <Button size="lg" onClick={handleReveal} disabled={loading}>
                 {loading ? "Revealing..." : "Reveal Responses"}
               </Button>
-            </CardContent>
-          </Card>
-        )}
-
-        {state === "waiting-for-partner-reveal" && (
-          <Card className="w-full max-w-md text-center">
-            <CardHeader>
-              <CardTitle>{promptText}</CardTitle>
-              <CardDescription>
-                Waiting for {partnerName} to reveal...
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                You&apos;ve revealed! Once {partnerName} reveals too, you&apos;ll see both responses.
-              </p>
             </CardContent>
           </Card>
         )}
