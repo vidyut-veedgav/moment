@@ -4,12 +4,10 @@ import { getMoment } from "@/src/actions/moments";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import FadeIn from "@/components/fade-in";
+import AppNav from "@/components/app-nav";
+import ThemeToggle from "@/components/theme-toggle";
+import ResponseComparison from "@/components/response-comparison";
 
 export default async function MomentDetailPage({
   params,
@@ -46,61 +44,58 @@ export default async function MomentDetailPage({
 
   return (
     <div className="flex min-h-screen flex-col">
-      <nav className="flex items-center justify-between border-b px-6 py-4">
-        <Link href="/home" className="text-xl font-bold">
-          Moment
-        </Link>
-        <div className="flex items-center gap-4">
-          <Link href="/history" className="text-sm text-muted-foreground hover:text-foreground">
-            History
-          </Link>
-          <Link href="/home" className="text-sm text-muted-foreground hover:text-foreground">
-            Home
-          </Link>
-        </div>
-      </nav>
+      <AppNav
+        rightSlot={
+          <>
+            <Link
+              href="/history"
+              className="bg-secondary rounded-full px-4 py-1.5 text-sm font-medium text-secondary-foreground transition-colors hover:bg-secondary/70"
+            >
+              History
+            </Link>
+            <ThemeToggle />
+            <Link
+              href="/home"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Home
+            </Link>
+          </>
+        }
+      />
 
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col items-center justify-center gap-6 px-6 py-8">
-        <h2 className="text-center text-lg font-semibold">
-          {moment.prompt.content}
-        </h2>
-        <p className="text-sm text-muted-foreground">
-          {new Date(moment.created_at).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          })}
-        </p>
+        <FadeIn>
+          <h2 className="font-display font-bold text-center text-2xl">
+            {moment.prompt.content}
+          </h2>
+        </FadeIn>
+        <FadeIn delay={0.1}>
+          <p className="text-sm text-muted-foreground">
+            {new Date(moment.created_at).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            })}
+          </p>
+        </FadeIn>
 
-        <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">You said...</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p>{myResponse?.content}</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">
-                {otherPartner.first_name} said...
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p>{partnerResponse?.content}</p>
-            </CardContent>
-          </Card>
-        </div>
+        <ResponseComparison
+          myContent={myResponse?.content ?? null}
+          partnerName={otherPartner.first_name}
+          partnerContent={partnerResponse?.content ?? null}
+        />
 
-        <div className="flex gap-4">
-          <Link href="/history">
-            <Button variant="outline">Back to History</Button>
-          </Link>
-          <Link href="/home">
-            <Button>Home</Button>
-          </Link>
-        </div>
+        <FadeIn delay={0.35}>
+          <div className="flex gap-4">
+            <Link href="/history">
+              <Button variant="outline">Back to History</Button>
+            </Link>
+            <Link href="/home">
+              <Button>Home</Button>
+            </Link>
+          </div>
+        </FadeIn>
       </main>
     </div>
   );

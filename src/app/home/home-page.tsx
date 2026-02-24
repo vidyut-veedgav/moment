@@ -1,20 +1,16 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
 import { submitResponse } from "@/src/actions/responses";
 import { revealMoment } from "@/src/actions/reveals";
 import { resetMoment } from "@/src/actions/moments";
 import RealtimeRefresh from "@/src/app/home/realtime-refresh";
-import { signOut } from "@/src/actions/auth";
-import Link from "next/link";
+import AppNav from "@/components/app-nav";
+import NoMomentState from "@/src/app/home/components/no-moment-state";
+import NeedsResponseState from "@/src/app/home/components/needs-response-state";
+import WaitingState from "@/src/app/home/components/waiting-state";
+import ReadyToRevealState from "@/src/app/home/components/ready-to-reveal-state";
+import RevealedState from "@/src/app/home/components/revealed-state";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -60,9 +56,6 @@ export default function HomePage({
   const [responseText, setResponseText] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Reset loading once the server has responded and state has changed.
-  // router.refresh() is fire-and-forget, so we can't await it directly —
-  // this effect fires only after the component re-renders with new props.
   useEffect(() => {
     setLoading(false);
   }, [state]);
@@ -104,107 +97,43 @@ export default function HomePage({
   return (
     <div className="flex min-h-screen flex-col">
       {state !== "no-moment" && <RealtimeRefresh momentId={momentId} />}
-      <nav className="flex items-center justify-between border-b px-6 py-4">
-        <Link href="/home" className="text-xl font-bold">
-          Moment
-        </Link>
-        <div className="flex items-center gap-4">
-          <Link href="/history" className="text-sm text-muted-foreground hover:text-foreground">
-            History
-          </Link>
-          <Button variant="ghost" size="sm" onClick={() => signOut()}>
-            Sign Out
-          </Button>
-        </div>
-      </nav>
 
-      <main className="flex flex-1 items-center justify-center px-6 py-8">
-        {state === "no-moment" && (
-          <Card className="w-full max-w-md text-center">
-            <CardHeader>
-              <CardTitle>All caught up!</CardTitle>
-              <CardDescription>
-                No more prompts available. Check back later!
-              </CardDescription>
-            </CardHeader>
-          </Card>
-        )}
+      <AppNav />
+
+      <main className="flex flex-1 flex-col items-center justify-center px-6 py-8">
+        {state === "no-moment" && <NoMomentState />}
 
         {state === "needs-response" && (
-          <Card className="w-full max-w-md">
-            <CardHeader>
-              <CardTitle>{promptText}</CardTitle>
-              <CardDescription>Share your response</CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-4">
-              <Textarea
-                placeholder="Type your response..."
-                value={responseText}
-                onChange={(e) => setResponseText(e.target.value)}
-                rows={4}
-              />
-              <Button onClick={handleSubmit} disabled={loading || !responseText.trim()}>
-                {loading ? "Submitting..." : "Submit"}
-              </Button>
-            </CardContent>
-          </Card>
+          <NeedsResponseState
+            promptText={promptText}
+            responseText={responseText}
+            onResponseChange={setResponseText}
+            onSubmit={handleSubmit}
+            loading={loading}
+          />
         )}
 
         {state === "waiting-for-partner" && (
-          <Card className="w-full max-w-md text-center">
-            <CardHeader>
-              <CardTitle>{promptText}</CardTitle>
-              <CardDescription>
-                Waiting for {partnerName} to respond...
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                You&apos;ve submitted your response. Come back once your partner has responded!
-              </p>
-            </CardContent>
-          </Card>
+          <WaitingState promptText={promptText} partnerName={partnerName} />
         )}
 
         {state === "ready-to-reveal" && (
-          <Card className="w-full max-w-md text-center">
-            <CardHeader>
-              <CardTitle>{promptText}</CardTitle>
-              <CardDescription>Both of you have responded!</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button size="lg" onClick={handleReveal} disabled={loading}>
-                {loading ? "Revealing..." : "Reveal Responses"}
-              </Button>
-            </CardContent>
-          </Card>
+          <ReadyToRevealState
+            promptText={promptText}
+            onReveal={handleReveal}
+            loading={loading}
+          />
         )}
 
         {state === "revealed" && (
-          <div className="flex w-full max-w-2xl flex-col gap-4">
-            <h2 className="text-center text-lg font-semibold">{promptText}</h2>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-base">You said...</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p>{myResponse?.content}</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-base">
-                    {partnerName} said...
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p>{partnerResponse?.content}</p>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
+          <RevealedState
+            promptText={promptText}
+            myContent={myResponse?.content ?? null}
+            partnerName={partnerName}
+            partnerContent={partnerResponse?.content ?? null}
+          />
         )}
+
         {state !== "no-moment" && (
           <div className="mt-8 text-center">
             <Button

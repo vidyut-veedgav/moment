@@ -1,8 +1,6 @@
 import { getPartner } from "@/src/actions/auth";
 import { getMyPartnership } from "@/src/actions/partnerships";
-import { getTodaysMoment, getMoment } from "@/src/actions/moments";
-import { getMyResponse } from "@/src/actions/responses";
-import { getRevealStatus } from "@/src/actions/reveals";
+import { getTodaysMoment } from "@/src/actions/moments";
 import { redirect } from "next/navigation";
 import HomePage from "@/src/app/home/home-page";
 
@@ -13,9 +11,9 @@ export default async function HomePageRoute() {
   const partnership = await getMyPartnership();
   if (!partnership) redirect("/partnership");
 
-  const todaysMoment = await getTodaysMoment(partnership.partnership_id);
+  const moment = await getTodaysMoment(partnership.partnership_id);
 
-  if (!todaysMoment) {
+  if (!moment) {
     return (
       <HomePage
         state="no-moment"
@@ -30,12 +28,6 @@ export default async function HomePageRoute() {
     );
   }
 
-  // Re-fetch with consistent shape that includes reveal_statuses
-  const moment = await getMoment(todaysMoment.moment_id);
-  if (!moment) redirect("/");
-
-  const myResponse = await getMyResponse(moment.moment_id);
-
   // Determine the other partner
   const otherPartner =
     partnership.partner1_id === partner.partner_id
@@ -43,19 +35,19 @@ export default async function HomePageRoute() {
       : partnership.partner1;
   const partnerName = `${otherPartner.first_name}`;
 
+  // Derive from already-fetched moment data — no extra DB calls needed
+  const myResponse = moment.responses.find(
+    (r) => r.responder_id === partner.partner_id
+  ) ?? null;
   const partnerResponse = moment.responses.find(
     (r) => r.responder_id === otherPartner.partner_id
-  );
-
-  let myRevealStatus = null;
-  let partnerRevealStatus = null;
-
-  if (moment.status === "BOTH_RESPONDED" || moment.status === "REVEALED") {
-    myRevealStatus = await getRevealStatus(moment.moment_id);
-    partnerRevealStatus = moment.reveal_statuses.find(
-      (rs) => rs.partner_id === otherPartner.partner_id
-    ) ?? null;
-  }
+  ) ?? null;
+  const myRevealStatus = moment.reveal_statuses.find(
+    (rs) => rs.partner_id === partner.partner_id
+  ) ?? null;
+  const partnerRevealStatus = moment.reveal_statuses.find(
+    (rs) => rs.partner_id === otherPartner.partner_id
+  ) ?? null;
 
   // Determine state
   let state: "no-moment" | "needs-response" | "waiting-for-partner" | "ready-to-reveal" | "revealed";
@@ -76,7 +68,7 @@ export default async function HomePageRoute() {
       momentId={moment.moment_id}
       promptText={moment.prompt.content}
       myResponse={myResponse}
-      partnerResponse={partnerResponse ?? null}
+      partnerResponse={partnerResponse}
       myRevealStatus={myRevealStatus}
       partnerRevealStatus={partnerRevealStatus}
     />

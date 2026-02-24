@@ -12,6 +12,7 @@ import { signIn } from "@/src/actions/auth";
 import { acceptInvite } from "@/src/actions/partnerships";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 export default function InvitePage({
   inviterName,
@@ -27,7 +28,6 @@ export default function InvitePage({
 
   async function handleAccept() {
     if (!isAuthenticated) {
-      // Set cookie so callback knows to redirect back here
       document.cookie = `pending_invite=${inviterPartnerId};path=/;max-age=600`;
       await signIn();
       return;
@@ -45,23 +45,32 @@ export default function InvitePage({
 
   return (
     <div className="flex min-h-screen items-center justify-center px-6">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl">You&apos;ve been invited!</CardTitle>
-          <CardDescription>
-            {inviterName} wants to be your partner on Moment
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex justify-center">
-          <Button size="lg" onClick={handleAccept} disabled={loading}>
-            {loading
-              ? "Joining..."
-              : isAuthenticated
-                ? "Accept Invite"
-                : "Sign In & Accept"}
-          </Button>
-        </CardContent>
-      </Card>
+      <motion.div
+        className="w-full max-w-md"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <Card>
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl">
+              You&apos;ve been invited!
+            </CardTitle>
+            <CardDescription>
+              {inviterName} wants to be your partner on Moment
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex justify-center">
+            <Button size="lg" onClick={handleAccept} disabled={loading}>
+              {loading
+                ? "Joining..."
+                : isAuthenticated
+                  ? "Accept Invite"
+                  : "Sign In & Accept"}
+            </Button>
+          </CardContent>
+        </Card>
+      </motion.div>
     </div>
   );
 }

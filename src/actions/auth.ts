@@ -1,5 +1,6 @@
 "use server";
 
+import { cache } from "react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma/prisma";
@@ -27,7 +28,7 @@ export async function signOut() {
   redirect("/");
 }
 
-export async function getPartner() {
+export const getPartner = cache(async () => {
   const supabase = await createClient();
   const { data: { user }, error } = await supabase.auth.getUser();
 
@@ -36,7 +37,7 @@ export async function getPartner() {
   return prisma.partner.findUnique({
     where: { auth_id: user.id },
   });
-}
+});
 
 export async function getPartnerById(partnerId: string) {
   return prisma.partner.findUnique({

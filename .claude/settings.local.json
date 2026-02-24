@@ -9,7 +9,10 @@
       "Bash(node -e \"\nconst { PrismaClient } = require\\(''./node_modules/.prisma/client''\\);\nconst prisma = new PrismaClient\\({\n  datasources: {\n    db: {\n      url: ''postgresql://postgres.dkqvtettahhegajkqlph:obYeSKxzDGkrUhuW@aws-0-us-west-2.pooler.supabase.com:5432/postgres''\n    }\n  }\n}\\);\n\nasync function run\\(\\) {\n  try {\n    const result = await prisma.$queryRaw\\\\`SELECT schemaname, tablename FROM pg_publication_tables WHERE pubname = ''supabase_realtime''\\\\`;\n    console.log\\(''Current publication tables:'', JSON.stringify\\(result, null, 2\\)\\);\n  } catch\\(e\\) {\n    console.error\\(''Error:'', e.message\\);\n  } finally {\n    await prisma.$disconnect\\(\\);\n  }\n}\nrun\\(\\);\n\")",
       "Bash(psql:*)",
       "Bash(node --version:*)",
-      "Bash(npx prisma:*)"
+      "Bash(npx prisma:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(cd /c/Users/Owner/Projects/moment && npm run build 2>&1)"
     ]
   },
   "enableAllProjectMcpServers": true,

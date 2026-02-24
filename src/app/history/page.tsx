@@ -9,6 +9,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import FadeIn from "@/components/fade-in";
+import AppNav from "@/components/app-nav";
+import ThemeToggle from "@/components/theme-toggle";
 
 export default async function HistoryPage() {
   const partner = await getPartner();
@@ -26,39 +29,50 @@ export default async function HistoryPage() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <nav className="flex items-center justify-between border-b px-6 py-4">
-        <Link href="/home" className="text-xl font-bold">
-          Moment
-        </Link>
-        <Link href="/home" className="text-sm text-muted-foreground hover:text-foreground">
-          Home
-        </Link>
-      </nav>
+      <AppNav
+        rightSlot={
+          <>
+            <Link
+              href="/home"
+              className="bg-secondary rounded-full px-4 py-1.5 text-sm font-medium text-secondary-foreground transition-colors hover:bg-secondary/70"
+            >
+              Home
+            </Link>
+            <ThemeToggle />
+          </>
+        }
+      />
 
       <main className="mx-auto w-full max-w-2xl px-6 py-8">
-        <h1 className="mb-6 text-2xl font-bold">History</h1>
+        <FadeIn>
+          <h1 className="font-display font-bold text-3xl mb-8">History</h1>
+        </FadeIn>
 
         {revealedMoments.length === 0 ? (
-          <p className="text-muted-foreground">No moments yet.</p>
+          <FadeIn delay={0.1}>
+            <p className="text-muted-foreground">No moments yet.</p>
+          </FadeIn>
         ) : (
           <div className="grid gap-4">
-            {revealedMoments.map((moment) => (
-              <Link key={moment.moment_id} href={`/moment/${moment.moment_id}`}>
-                <Card className="transition-colors hover:bg-muted/50">
-                  <CardHeader>
-                    <CardTitle className="text-base line-clamp-2">
-                      {moment.prompt.content}
-                    </CardTitle>
-                    <CardDescription>
-                      {new Date(moment.created_at).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-              </Link>
+            {revealedMoments.map((moment, i) => (
+              <FadeIn key={moment.moment_id} delay={0.05 + i * 0.05}>
+                <Link href={`/moment/${moment.moment_id}`}>
+                  <Card className="transition-all hover:shadow-lg hover:scale-[1.01]">
+                    <CardHeader>
+                      <CardTitle className="text-base line-clamp-2">
+                        {moment.prompt.content}
+                      </CardTitle>
+                      <CardDescription>
+                        {new Date(moment.created_at).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
+                      </CardDescription>
+                    </CardHeader>
+                  </Card>
+                </Link>
+              </FadeIn>
             ))}
           </div>
         )}

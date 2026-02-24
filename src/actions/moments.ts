@@ -90,6 +90,7 @@ export async function createMoment(partnershipId: string, promptId: string) {
       include: {
         prompt: true,
         responses: { include: { responder: true } },
+        reveal_statuses: true,
       },
     });
   });
