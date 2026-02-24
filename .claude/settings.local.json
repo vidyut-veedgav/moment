@@ -12,7 +12,9 @@
       "Bash(npx prisma:*)",
       "Bash(find:*)",
       "Bash(grep:*)",
-      "Bash(cd /c/Users/Owner/Projects/moment && npm run build 2>&1)"
+      "Bash(cd /c/Users/Owner/Projects/moment && npm run build 2>&1)",
+      "mcp__supabase__get_advisors",
+      "mcp__supabase__execute_sql"
     ]
   },
   "enableAllProjectMcpServers": true,
