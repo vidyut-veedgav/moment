@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { signIn } from "@/src/actions/auth";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 const features = [
   { num: "01", title: "Respond", desc: "Answer a daily prompt honestly and independently" },
@@ -37,6 +38,13 @@ export default function LandingPage() {
           className="h-14 px-12 text-lg rounded-2xl"
           onClick={() => signIn()}
         >
+          <Image
+            src="/icons/Google__G__logo.svg.png"
+            alt="Google"
+            width={20}
+            height={20}
+            className="shrink-0"
+          />
           Get Started
         </Button>
       </motion.div>

@@ -2,6 +2,7 @@
 
 import { getPartner } from "@/src/actions/auth";
 import { prisma } from "@/lib/prisma/prisma";
+import { sendSMS } from "@/lib/twilio/sms";
 
 export async function submitResponse(momentId: string, content: string) {
   const partner = await getPartner();
@@ -9,7 +10,7 @@ export async function submitResponse(momentId: string, content: string) {
 
   if (!content.trim()) throw new Error("Response cannot be empty");
 
-  return prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx) => {
     const response = await tx.response.findUnique({
       where: {
         responder_id_moment_id: {
@@ -30,6 +31,7 @@ export async function submitResponse(momentId: string, content: string) {
     // Check if both partners have now responded
     const allResponses = await tx.response.findMany({
       where: { moment_id: momentId },
+      include: { responder: true },
     });
     const allResponded = allResponses.every((r) => r.status === "RESPONDED");
 
@@ -39,7 +41,6 @@ export async function submitResponse(momentId: string, content: string) {
         data: { status: "BOTH_RESPONDED" },
       });
 
-      // Create RevealStatus rows now that there's something to reveal
       await tx.revealStatus.createMany({
         data: allResponses.map((r) => ({
           partner_id: r.responder_id,
@@ -48,7 +49,7 @@ export async function submitResponse(momentId: string, content: string) {
       });
     }
 
-    return tx.moment.findUnique({
+    const moment = await tx.moment.findUnique({
       where: { moment_id: momentId },
       include: {
         prompt: true,
@@ -56,7 +57,33 @@ export async function submitResponse(momentId: string, content: string) {
         reveal_statuses: true,
       },
     });
+
+    return { moment, allResponded, allResponses };
   });
+
+  // Send SMS after transaction succeeds
+  if (result.allResponded) {
+    for (const r of result.allResponses) {
+      if (r.responder.phone) {
+        sendSMS(
+          r.responder.phone,
+          "Both of you have responded! Time to reveal your Moment."
+        );
+      }
+    }
+  } else {
+    const otherPartner = result.allResponses.find(
+      (r) => r.responder_id !== partner.partner_id
+    );
+    if (otherPartner?.responder.phone) {
+      sendSMS(
+        otherPartner.responder.phone,
+        "Your partner responded to today's prompt! Time to share your thoughts."
+      );
+    }
+  }
+
+  return result.moment;
 }
 
 export async function getMyResponse(momentId: string) {

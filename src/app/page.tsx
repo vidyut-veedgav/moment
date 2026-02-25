@@ -7,6 +7,7 @@ export default async function Home() {
   const partner = await getPartner();
 
   if (partner) {
+    if (!partner.phone) redirect("/onboarding");
     const partnership = await getMyPartnership();
     if (partnership) redirect("/home");
     redirect("/partnership");

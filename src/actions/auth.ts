@@ -39,6 +39,20 @@ export const getPartner = cache(async () => {
   });
 });
 
+export async function updatePhone(phone: string) {
+  const partner = await getPartner();
+  if (!partner) throw new Error("Not authenticated");
+
+  if (!/^\+[1-9]\d{1,14}$/.test(phone)) {
+    throw new Error("Invalid phone number format");
+  }
+
+  return prisma.partner.update({
+    where: { partner_id: partner.partner_id },
+    data: { phone },
+  });
+}
+
 export async function getPartnerById(partnerId: string) {
   return prisma.partner.findUnique({
     where: { partner_id: partnerId },

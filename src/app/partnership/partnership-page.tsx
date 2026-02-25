@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import PulsingDots from "@/components/pulsing-dots";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
@@ -20,10 +20,15 @@ export default function PartnershipPage({
 }) {
   const [inviteLink, setInviteLink] = useState<string | null>(null);
 
-  function generateLink() {
+  useEffect(() => {
     const link = `${window.location.origin}/invite/${partnerId}`;
     setInviteLink(link);
-  }
+    navigator.clipboard.writeText(link).then(() => {
+      toast.success("Invite link copied to clipboard!");
+    }).catch(() => {
+      // Clipboard write requires a user gesture in some browsers — silently ignore
+    });
+  }, [partnerId]);
 
   async function copyLink() {
     if (!inviteLink) return;
@@ -45,15 +50,11 @@ export default function PartnershipPage({
               Create Your Partnership
             </CardTitle>
             <CardDescription>
-              Generate an invite link and send it to your partner
+              Share this link with your partner and we'll notify you when they join!
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center gap-4">
-            {!inviteLink ? (
-              <Button size="lg" onClick={generateLink}>
-                Generate Invite Link
-              </Button>
-            ) : (
+            {inviteLink && (
               <>
                 <div className="flex w-full items-center gap-2 rounded-xl border bg-muted/50 p-3">
                   <p className="flex-1 truncate text-sm">{inviteLink}</p>
@@ -63,7 +64,6 @@ export default function PartnershipPage({
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <PulsingDots size="sm" />
-                  <span>Waiting for partner to join...</span>
                 </div>
               </>
             )}

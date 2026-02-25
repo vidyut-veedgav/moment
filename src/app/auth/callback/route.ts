@@ -41,6 +41,11 @@ export async function GET(request: Request) {
     });
   }
 
+  // Redirect to onboarding if phone not set
+  if (!partner.phone) {
+    return NextResponse.redirect(`${origin}/onboarding`);
+  }
+
   // Check for pending invite cookie
   const cookieStore = await cookies();
   const pendingInvite = cookieStore.get("pending_invite")?.value;

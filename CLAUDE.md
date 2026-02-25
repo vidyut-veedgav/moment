@@ -14,31 +14,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **UI**: Tailwind CSS v4, shadcn/ui components (New York style)
 - **Icons**: Lucide React
 
-## Development Commands
-
-```bash
-# Start development server
-npm run dev
-
-# Build for production (regenerates Prisma client first)
-npm run build
-
-# Lint codebase
-npm run lint
-
-# Generate Prisma client after schema changes
-npx prisma generate
-
-# Create and apply database migrations
-npx prisma migrate dev --name <migration_name>
-
-# Open Prisma Studio (database GUI)
-npx prisma studio
-
-# Add shadcn/ui components
-npx shadcn@latest add <component-name>
-```
-
 ## Architecture
 
 ### Directory Structure
