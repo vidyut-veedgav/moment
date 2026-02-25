@@ -22,8 +22,8 @@ export default async function HistoryPage() {
 
   const moments = await getMoments(partnership.partnership_id);
   const revealedMoments = moments.filter((m) =>
-    m.reveal_statuses.some(
-      (rs) => rs.partner_id === partner.partner_id && rs.has_revealed
+    m.responses.some(
+      (r) => r.responder_id === partner.partner_id && r.status === "REVEALED"
     )
   );
 

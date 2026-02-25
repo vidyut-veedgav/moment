@@ -18,6 +18,7 @@ enum MomentStatus {
 enum ResponseStatus {
   PENDING
   RESPONDED
+  REVEALED
 }
 
 // Models
@@ -34,7 +35,6 @@ model Partner {
   partnerships_as_partner1 Partnership[]  @relation("Partner1")
   partnerships_as_partner2 Partnership[]  @relation("Partner2")
   responses                Response[]
-  reveal_statuses          RevealStatus[]
 
   @@map("partners")
 }
@@ -99,7 +99,6 @@ model Moment {
   prompt          Prompt         @relation(fields: [prompt_id], references: [prompt_id], onDelete: Cascade)
   partnership     Partnership    @relation(fields: [partnership_id], references: [partnership_id], onDelete: Cascade)
   responses       Response[]
-  reveal_statuses RevealStatus[]
 
   @@index([partnership_id])
   @@index([created_at])
@@ -122,20 +121,4 @@ model Response {
   @@unique([responder_id, moment_id]) // One response per partner per moment
   @@index([moment_id])
   @@map("responses")
-}
-
-model RevealStatus {
-  partner_id   String   @db.Uuid
-  moment_id    String   @db.Uuid
-  has_revealed Boolean  @default(false)
-  created_at   DateTime @default(now())
-  updated_at   DateTime @updatedAt
-
-  // Relations
-  partner Partner @relation(fields: [partner_id], references: [partner_id], onDelete: Cascade)
-  moment  Moment  @relation(fields: [moment_id], references: [moment_id], onDelete: Cascade)
-
-  @@id([partner_id, moment_id])
-  @@index([moment_id])
-  @@map("reveal_statuses")
 }

@@ -71,12 +71,11 @@ export async function someAction(arg: string) {
 - `Prompt`: Question/prompt text that can be reused
 - `PartnershipPrompt`: Junction table linking prompts to partnerships
 - `Moment`: An instance of partners responding to a prompt
-- `Response`: Each partner's answer to a moment
-- `RevealStatus`: Tracks which partners have revealed a moment
+- `Response`: Each partner's answer to a moment (also tracks reveal state)
 
 **Workflow States:**
 - Moment status: `PENDING → BOTH_RESPONDED → REVEALED`
-- Response status: `PENDING → RESPONDED`
+- Response status: `PENDING → RESPONDED → REVEALED`
 
 ### Authentication Flow
 
@@ -128,9 +127,8 @@ Required environment variables (not checked into git):
 2. System creates two PENDING response slots (one per partner)
 3. Each partner submits their response independently
 4. When both respond, moment status → `BOTH_RESPONDED`
-5. RevealStatus records are created for both partners
-6. Each partner must reveal independently
-7. When both reveal, moment status → `REVEALED`
+5. Each partner reveals independently (Response status → `REVEALED`)
+6. When both reveal, moment status → `REVEALED`
 
 ### Partnership System
 - Each partner can only have ONE partnership

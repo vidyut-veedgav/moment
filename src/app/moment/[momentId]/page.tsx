@@ -25,19 +25,16 @@ export default async function MomentDetailPage({
   const moment = await getMoment(momentId);
   if (!moment) redirect("/home");
 
-  const myRevealStatus = moment.reveal_statuses.find(
-    (rs) => rs.partner_id === partner.partner_id
+  const myResponse = moment.responses.find(
+    (r) => r.responder_id === partner.partner_id
   );
-  if (!myRevealStatus?.has_revealed) redirect("/home");
+  if (myResponse?.status !== "REVEALED") redirect("/home");
 
   const otherPartner =
     partnership.partner1_id === partner.partner_id
       ? partnership.partner2
       : partnership.partner1;
 
-  const myResponse = moment.responses.find(
-    (r) => r.responder_id === partner.partner_id
-  );
   const partnerResponse = moment.responses.find(
     (r) => r.responder_id === otherPartner.partner_id
   );

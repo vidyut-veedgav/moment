@@ -16,7 +16,6 @@ export async function getTodaysMoment(partnershipId: string) {
     include: {
       prompt: true,
       responses: { include: { responder: true } },
-      reveal_statuses: true,
     },
   });
 
@@ -90,8 +89,7 @@ export async function createMoment(partnershipId: string, promptId: string) {
       include: {
         prompt: true,
         responses: { include: { responder: true } },
-        reveal_statuses: true,
-      },
+        },
     });
   });
 }
@@ -102,7 +100,6 @@ export async function getMoments(partnershipId: string) {
     include: {
       prompt: true,
       responses: { include: { responder: true } },
-      reveal_statuses: true,
     },
     orderBy: { created_at: "desc" },
   });
@@ -131,7 +128,6 @@ export async function resetMoment(momentId: string) {
     });
     if (!partnership) throw new Error("Not authorized");
 
-    await tx.revealStatus.deleteMany({ where: { moment_id: momentId } });
     await tx.response.updateMany({
       where: { moment_id: momentId },
       data: { status: "PENDING", content: null },
@@ -149,7 +145,6 @@ export async function getMoment(momentId: string) {
     include: {
       prompt: true,
       responses: { include: { responder: true } },
-      reveal_statuses: true,
     },
   });
 }

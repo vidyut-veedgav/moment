@@ -20,7 +20,6 @@ export async function revealMoment(momentId: string) {
         include: {
           prompt: true,
           responses: { include: { responder: true } },
-          reveal_statuses: true,
         },
       });
     }
@@ -29,33 +28,28 @@ export async function revealMoment(momentId: string) {
       throw new Error("Not ready to reveal");
     }
 
-    const revealStatus = await tx.revealStatus.findUnique({
+    const myResponse = await tx.response.findUnique({
       where: {
-        partner_id_moment_id: {
-          partner_id: partner.partner_id,
+        responder_id_moment_id: {
+          responder_id: partner.partner_id,
           moment_id: momentId,
         },
       },
     });
-    if (!revealStatus) throw new Error("Reveal status not found");
+    if (!myResponse) throw new Error("Response not found");
 
-    if (!revealStatus.has_revealed) {
-      await tx.revealStatus.update({
-        where: {
-          partner_id_moment_id: {
-            partner_id: partner.partner_id,
-            moment_id: momentId,
-          },
-        },
-        data: { has_revealed: true },
+    if (myResponse.status === "RESPONDED") {
+      await tx.response.update({
+        where: { response_id: myResponse.response_id },
+        data: { status: "REVEALED" },
       });
     }
 
-    // Check if both partners have now revealed
-    const allRevealStatuses = await tx.revealStatus.findMany({
+    // Check if all responses are now revealed
+    const allResponses = await tx.response.findMany({
       where: { moment_id: momentId },
     });
-    if (allRevealStatuses.every((rs) => rs.has_revealed)) {
+    if (allResponses.every((r) => r.status === "REVEALED")) {
       await tx.moment.update({
         where: { moment_id: momentId },
         data: { status: "REVEALED" },
@@ -67,22 +61,7 @@ export async function revealMoment(momentId: string) {
       include: {
         prompt: true,
         responses: { include: { responder: true } },
-        reveal_statuses: true,
       },
     });
-  });
-}
-
-export async function getRevealStatus(momentId: string) {
-  const partner = await getPartner();
-  if (!partner) throw new Error("Not authenticated");
-
-  return prisma.revealStatus.findUnique({
-    where: {
-      partner_id_moment_id: {
-        partner_id: partner.partner_id,
-        moment_id: momentId,
-      },
-    },
   });
 }

@@ -22,8 +22,6 @@ export default async function HomePageRoute() {
         promptText=""
         myResponse={null}
         partnerResponse={null}
-        myRevealStatus={null}
-        partnerRevealStatus={null}
       />
     );
   }
@@ -42,20 +40,13 @@ export default async function HomePageRoute() {
   const partnerResponse = moment.responses.find(
     (r) => r.responder_id === otherPartner.partner_id
   ) ?? null;
-  const myRevealStatus = moment.reveal_statuses.find(
-    (rs) => rs.partner_id === partner.partner_id
-  ) ?? null;
-  const partnerRevealStatus = moment.reveal_statuses.find(
-    (rs) => rs.partner_id === otherPartner.partner_id
-  ) ?? null;
-
   // Determine state
   let state: "no-moment" | "needs-response" | "waiting-for-partner" | "ready-to-reveal" | "revealed";
   if (!myResponse || myResponse.status === "PENDING") {
     state = "needs-response";
   } else if (moment.status === "PENDING") {
     state = "waiting-for-partner";
-  } else if (myRevealStatus && myRevealStatus.has_revealed) {
+  } else if (myResponse?.status === "REVEALED") {
     state = "revealed";
   } else {
     state = "ready-to-reveal";
@@ -69,8 +60,6 @@ export default async function HomePageRoute() {
       promptText={moment.prompt.content}
       myResponse={myResponse}
       partnerResponse={partnerResponse}
-      myRevealStatus={myRevealStatus}
-      partnerRevealStatus={partnerRevealStatus}
     />
   );
 }

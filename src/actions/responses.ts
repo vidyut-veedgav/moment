@@ -21,7 +21,7 @@ export async function submitResponse(momentId: string, content: string) {
     });
 
     if (!response) throw new Error("Response not found");
-    if (response.status === "RESPONDED") throw new Error("Already responded");
+    if (response.status !== "PENDING") throw new Error("Already responded");
 
     await tx.response.update({
       where: { response_id: response.response_id },
@@ -40,13 +40,6 @@ export async function submitResponse(momentId: string, content: string) {
         where: { moment_id: momentId },
         data: { status: "BOTH_RESPONDED" },
       });
-
-      await tx.revealStatus.createMany({
-        data: allResponses.map((r) => ({
-          partner_id: r.responder_id,
-          moment_id: momentId,
-        })),
-      });
     }
 
     const moment = await tx.moment.findUnique({
@@ -54,7 +47,6 @@ export async function submitResponse(momentId: string, content: string) {
       include: {
         prompt: true,
         responses: { include: { responder: true } },
-        reveal_statuses: true,
       },
     });
 

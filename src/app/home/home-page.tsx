@@ -29,10 +29,6 @@ interface ResponseData {
   responder?: { first_name: string; last_name: string };
 }
 
-interface RevealStatusData {
-  has_revealed: boolean;
-}
-
 export default function HomePage({
   state,
   partnerName,
@@ -40,8 +36,6 @@ export default function HomePage({
   promptText,
   myResponse,
   partnerResponse,
-  myRevealStatus,
-  partnerRevealStatus,
 }: {
   state: HomeState;
   partnerName: string;
@@ -49,8 +43,6 @@ export default function HomePage({
   promptText: string;
   myResponse: ResponseData | null;
   partnerResponse: ResponseData | null;
-  myRevealStatus: RevealStatusData | null;
-  partnerRevealStatus: RevealStatusData | null;
 }) {
   const router = useRouter();
   const [responseText, setResponseText] = useState("");
