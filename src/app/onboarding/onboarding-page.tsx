@@ -11,6 +11,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { updatePhone } from "@/src/actions/auth";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
@@ -26,6 +28,7 @@ function formatToE164(raw: string): string {
 export default function OnboardingPage() {
   const router = useRouter();
   const [phone, setPhone] = useState("");
+  const [smsConsent, setSmsConsent] = useState(false);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -34,6 +37,11 @@ export default function OnboardingPage() {
 
     if (!/^\+[1-9]\d{1,14}$/.test(formatted)) {
       toast.error("Please enter a valid phone number.");
+      return;
+    }
+
+    if (!smsConsent) {
+      toast.error("You must agree to receive text messages to continue.");
       return;
     }
 
@@ -73,6 +81,16 @@ export default function OnboardingPage() {
                 onChange={(e) => setPhone(e.target.value)}
                 required
               />
+              <div className="flex items-start gap-3">
+                <Checkbox
+                  id="sms-consent"
+                  checked={smsConsent}
+                  onCheckedChange={(checked) => setSmsConsent(checked === true)}
+                />
+                <Label htmlFor="sms-consent" className="text-sm text-muted-foreground leading-snug cursor-pointer">
+                  I agree to receive text messages from Moment, including prompt notifications and partner activity alerts.
+                </Label>
+              </div>
               <Button type="submit" disabled={loading || !phone.trim()}>
                 {loading ? "Saving..." : "Continue"}
               </Button>
