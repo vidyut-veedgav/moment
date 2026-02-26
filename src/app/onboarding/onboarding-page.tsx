@@ -69,7 +69,7 @@ export default function OnboardingPage() {
               Welcome to Moment
             </CardTitle>
             <CardDescription>
-              Enter your phone number.
+              Enter your phone number
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -88,7 +88,7 @@ export default function OnboardingPage() {
                   onCheckedChange={(checked) => setSmsConsent(checked === true)}
                 />
                 <Label htmlFor="sms-consent" className="text-sm text-muted-foreground leading-snug cursor-pointer">
-                  I agree to receive text messages from Moment, including prompt notifications and partner activity alerts.
+                  I agree to receive text notoifications from Moment, including prompt releases and partner activity alerts
                 </Label>
               </div>
               <Button type="submit" disabled={loading || !phone.trim()}>
