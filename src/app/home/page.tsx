@@ -13,6 +13,8 @@ export default async function HomePageRoute() {
 
   const moment = await getTodaysMoment(partnership.partnership_id);
 
+  const showDevTools = process.env.NODE_ENV === "development";
+
   if (!moment) {
     return (
       <HomePage
@@ -22,6 +24,7 @@ export default async function HomePageRoute() {
         promptText=""
         myResponse={null}
         partnerResponse={null}
+        showDevTools={showDevTools}
       />
     );
   }
@@ -60,6 +63,7 @@ export default async function HomePageRoute() {
       promptText={moment.prompt.content}
       myResponse={myResponse}
       partnerResponse={partnerResponse}
+      showDevTools={showDevTools}
     />
   );
 }

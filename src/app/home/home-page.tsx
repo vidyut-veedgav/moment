@@ -36,6 +36,7 @@ export default function HomePage({
   promptText,
   myResponse,
   partnerResponse,
+  showDevTools,
 }: {
   state: HomeState;
   partnerName: string;
@@ -43,6 +44,7 @@ export default function HomePage({
   promptText: string;
   myResponse: ResponseData | null;
   partnerResponse: ResponseData | null;
+  showDevTools: boolean;
 }) {
   const router = useRouter();
   const [responseText, setResponseText] = useState("");
@@ -126,7 +128,7 @@ export default function HomePage({
           />
         )}
 
-        {state !== "no-moment" && (
+        {showDevTools && state !== "no-moment" && (
           <div className="mt-8 text-center">
             <Button
               variant="ghost"
