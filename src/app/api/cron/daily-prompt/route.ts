@@ -70,7 +70,7 @@ export async function GET(request: Request) {
     // Send SMS to both partners
     for (const p of [partnership.partner1, partnership.partner2]) {
       if (p.phone) {
-        sendSMS(p.phone, "Your daily Moment prompt is ready!");
+        await sendSMS(p.phone, "Your daily Moment prompt is ready!");
         notificationsSent++;
       }
     }
