@@ -69,7 +69,7 @@ export default function OnboardingPage() {
               Welcome to Moment
             </CardTitle>
             <CardDescription>
-              Enter your phone number so we can notify you when your partner responds or a new prompt is ready.
+              Enter your phone number.
             </CardDescription>
           </CardHeader>
           <CardContent>
