@@ -75,8 +75,7 @@ export default function OnboardingPage() {
                 One last step
               </h1>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Add your phone number and we&apos;ll nudge you<br />
-                when your daily prompt is ready.
+                Add your phone number and we&apos;ll let you know when your daily prompt is ready.
               </p>
             </div>
           </div>
@@ -123,8 +122,8 @@ export default function OnboardingPage() {
           >
             By checking this box, I agree to receive recurring SMS notifications
             from Moment, including daily prompt releases and partner activity
-            alerts. Message frequency varies (up to 1 message per day). Message
-            and data rates may apply. Reply STOP to opt out at any time.{" "}
+            alerts. Message frequency varies (up to 3 messages per day). Note that message
+            and data rates may apply and you can reply STOP to opt out at any time.{" "}
             <a href="/terms" className="underline hover:text-foreground transition-colors">
               Terms of Service
             </a>{" "}
