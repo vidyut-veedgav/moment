@@ -20,6 +20,7 @@ export default async function HomePageRoute() {
       <HomePage
         state="no-moment"
         partnerName=""
+        partnershipId={partnership.partnership_id}
         momentId=""
         promptText=""
         myResponse={null}
@@ -59,6 +60,7 @@ export default async function HomePageRoute() {
     <HomePage
       state={state}
       partnerName={partnerName}
+      partnershipId={partnership.partnership_id}
       momentId={moment.moment_id}
       promptText={moment.prompt.content}
       myResponse={myResponse}

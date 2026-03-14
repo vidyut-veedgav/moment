@@ -1,11 +1,10 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { submitResponse } from "@/src/actions/responses";
 import { revealMoment } from "@/src/actions/reveals";
-import { resetMoment } from "@/src/actions/moments";
 import RealtimeRefresh from "@/src/app/home/realtime-refresh";
 import AppNav from "@/components/app-nav";
+import DevPanel from "@/components/dev-panel";
 import NoMomentState from "@/src/app/home/components/no-moment-state";
 import NeedsResponseState from "@/src/app/home/components/needs-response-state";
 import WaitingState from "@/src/app/home/components/waiting-state";
@@ -32,6 +31,7 @@ interface ResponseData {
 export default function HomePage({
   state,
   partnerName,
+  partnershipId,
   momentId,
   promptText,
   myResponse,
@@ -40,6 +40,7 @@ export default function HomePage({
 }: {
   state: HomeState;
   partnerName: string;
+  partnershipId: string;
   momentId: string;
   promptText: string;
   myResponse: ResponseData | null;
@@ -73,17 +74,6 @@ export default function HomePage({
       router.refresh();
     } catch (err) {
       alert(err instanceof Error ? err.message : "Failed to reveal");
-      setLoading(false);
-    }
-  }
-
-  async function handleReset() {
-    setLoading(true);
-    try {
-      await resetMoment(momentId);
-      router.refresh();
-    } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to reset");
       setLoading(false);
     }
   }
@@ -128,20 +118,14 @@ export default function HomePage({
           />
         )}
 
-        {showDevTools && state !== "no-moment" && (
-          <div className="mt-8 text-center">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-xs text-muted-foreground"
-              onClick={handleReset}
-              disabled={loading}
-            >
-              [DEV] Reset Moment
-            </Button>
-          </div>
-        )}
       </main>
+
+      {showDevTools && (
+        <DevPanel
+          partnershipId={partnershipId}
+          momentId={momentId || null}
+        />
+      )}
     </div>
   );
 }

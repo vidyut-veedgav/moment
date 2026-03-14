@@ -129,6 +129,11 @@ export default function PrivacyPolicy() {
           </li>
           <li style={{ lineHeight: 1.5 }}>
             <span style={{ color: "rgb(89, 89, 89)", fontSize: 15 }}>
+              <span data-custom-class="body_text"><strong>Phone number</strong> provided during onboarding, used solely to send SMS notifications with your explicit consent.</span>
+            </span>
+          </li>
+          <li style={{ lineHeight: 1.5 }}>
+            <span style={{ color: "rgb(89, 89, 89)", fontSize: 15 }}>
               <span data-custom-class="body_text"><strong>Prompt responses</strong> that you submit within the app.</span>
             </span>
           </li>
@@ -205,11 +210,76 @@ export default function PrivacyPolicy() {
 
         <div style={{ lineHeight: 1.5 }}><br /></div>
 
-        {/* Section 3 */}
+        {/* Section 2b - SMS */}
         <div style={{ lineHeight: 1.5 }}>
           <span style={{ color: "rgb(0, 0, 0)", fontSize: 15 }}>
             <strong>
-              <span data-custom-class="heading_1"><h2>3. WHEN AND WITH WHOM DO WE SHARE YOUR INFORMATION?</h2></span>
+              <span data-custom-class="heading_1"><h2>3. SMS TEXT NOTIFICATIONS</h2></span>
+            </strong>
+          </span>
+        </div>
+
+        <div style={{ lineHeight: 1.5 }}>
+          <span style={{ color: "rgb(89, 89, 89)", fontSize: 15 }}>
+            <span data-custom-class="body_text">
+              With your explicit consent during onboarding, Moment sends recurring SMS text notifications to the phone number you provide. These messages include:
+            </span>
+          </span>
+        </div>
+
+        <ul>
+          <li style={{ lineHeight: 1.5 }}>
+            <span style={{ color: "rgb(89, 89, 89)", fontSize: 15 }}>
+              <span data-custom-class="body_text">Daily prompt release alerts</span>
+            </span>
+          </li>
+          <li style={{ lineHeight: 1.5 }}>
+            <span style={{ color: "rgb(89, 89, 89)", fontSize: 15 }}>
+              <span data-custom-class="body_text">Notifications when your partner has responded to a prompt</span>
+            </span>
+          </li>
+          <li style={{ lineHeight: 1.5 }}>
+            <span style={{ color: "rgb(89, 89, 89)", fontSize: 15 }}>
+              <span data-custom-class="body_text">Notifications when both partners have responded and a reveal is ready</span>
+            </span>
+          </li>
+        </ul>
+
+        <div style={{ lineHeight: 1.5 }}>
+          <span style={{ color: "rgb(89, 89, 89)", fontSize: 15 }}>
+            <span data-custom-class="body_text">
+              <strong>Message frequency:</strong> Up to 1 message per day. Message and data rates may apply.
+            </span>
+          </span>
+        </div>
+
+        <div style={{ lineHeight: 1.5 }}><br /></div>
+
+        <div style={{ lineHeight: 1.5 }}>
+          <span style={{ color: "rgb(89, 89, 89)", fontSize: 15 }}>
+            <span data-custom-class="body_text">
+              <strong>To opt out:</strong> Reply <strong>STOP</strong> to any message you receive from us. You will receive one confirmation message and no further SMS messages will be sent. To re-enroll, contact us or update your preferences in the app.
+            </span>
+          </span>
+        </div>
+
+        <div style={{ lineHeight: 1.5 }}><br /></div>
+
+        <div style={{ lineHeight: 1.5 }}>
+          <span style={{ color: "rgb(89, 89, 89)", fontSize: 15 }}>
+            <span data-custom-class="body_text">
+              SMS messages are delivered via Twilio, Inc., our third-party messaging provider. Your phone number is shared with Twilio solely for the purpose of delivering these notifications and is not used for marketing or sold to any other party.
+            </span>
+          </span>
+        </div>
+
+        <div style={{ lineHeight: 1.5 }}><br /></div>
+
+        {/* Section 4 (renumbered) */}
+        <div style={{ lineHeight: 1.5 }}>
+          <span style={{ color: "rgb(0, 0, 0)", fontSize: 15 }}>
+            <strong>
+              <span data-custom-class="heading_1"><h2>4. WHEN AND WITH WHOM DO WE SHARE YOUR INFORMATION?</h2></span>
             </strong>
           </span>
         </div>
@@ -230,7 +300,7 @@ export default function PrivacyPolicy() {
           </li>
           <li style={{ lineHeight: 1.5 }}>
             <span style={{ color: "rgb(89, 89, 89)", fontSize: 15 }}>
-              <span data-custom-class="body_text"><strong>Service providers:</strong> We may share data with third-party vendors who help us operate our Services (e.g., Supabase for database and authentication, Vercel for hosting).</span>
+              <span data-custom-class="body_text"><strong>Service providers:</strong> We may share data with third-party vendors who help us operate our Services (e.g., Supabase for database and authentication, Vercel for hosting, Twilio for SMS delivery).</span>
             </span>
           </li>
           <li style={{ lineHeight: 1.5 }}>
@@ -250,11 +320,11 @@ export default function PrivacyPolicy() {
 
         <div style={{ lineHeight: 1.5 }}><br /></div>
 
-        {/* Section 4 */}
+        {/* Section 5 */}
         <div style={{ lineHeight: 1.5 }}>
           <span style={{ color: "rgb(0, 0, 0)", fontSize: 15 }}>
             <strong>
-              <span data-custom-class="heading_1"><h2>4. DO WE USE COOKIES AND OTHER TRACKING TECHNOLOGIES?</h2></span>
+              <span data-custom-class="heading_1"><h2>5. DO WE USE COOKIES AND OTHER TRACKING TECHNOLOGIES?</h2></span>
             </strong>
           </span>
         </div>
@@ -275,11 +345,11 @@ export default function PrivacyPolicy() {
 
         <div style={{ lineHeight: 1.5 }}><br /></div>
 
-        {/* Section 5 */}
+        {/* Section 6 */}
         <div style={{ lineHeight: 1.5 }}>
           <span style={{ color: "rgb(0, 0, 0)", fontSize: 15 }}>
             <strong>
-              <span data-custom-class="heading_1"><h2>5. HOW LONG DO WE KEEP YOUR INFORMATION?</h2></span>
+              <span data-custom-class="heading_1"><h2>6. HOW LONG DO WE KEEP YOUR INFORMATION?</h2></span>
             </strong>
           </span>
         </div>
@@ -294,11 +364,11 @@ export default function PrivacyPolicy() {
 
         <div style={{ lineHeight: 1.5 }}><br /></div>
 
-        {/* Section 6 */}
+        {/* Section 7 */}
         <div style={{ lineHeight: 1.5 }}>
           <span style={{ color: "rgb(0, 0, 0)", fontSize: 15 }}>
             <strong>
-              <span data-custom-class="heading_1"><h2>6. HOW DO WE KEEP YOUR INFORMATION SAFE?</h2></span>
+              <span data-custom-class="heading_1"><h2>7. HOW DO WE KEEP YOUR INFORMATION SAFE?</h2></span>
             </strong>
           </span>
         </div>
@@ -313,11 +383,11 @@ export default function PrivacyPolicy() {
 
         <div style={{ lineHeight: 1.5 }}><br /></div>
 
-        {/* Section 7 */}
+        {/* Section 8 */}
         <div style={{ lineHeight: 1.5 }}>
           <span style={{ color: "rgb(0, 0, 0)", fontSize: 15 }}>
             <strong>
-              <span data-custom-class="heading_1"><h2>7. WHAT ARE YOUR PRIVACY RIGHTS?</h2></span>
+              <span data-custom-class="heading_1"><h2>8. WHAT ARE YOUR PRIVACY RIGHTS?</h2></span>
             </strong>
           </span>
         </div>
@@ -342,11 +412,11 @@ export default function PrivacyPolicy() {
 
         <div style={{ lineHeight: 1.5 }}><br /></div>
 
-        {/* Section 8 */}
+        {/* Section 9 */}
         <div style={{ lineHeight: 1.5 }}>
           <span style={{ color: "rgb(0, 0, 0)", fontSize: 15 }}>
             <strong>
-              <span data-custom-class="heading_1"><h2>8. DO WE COLLECT INFORMATION FROM MINORS?</h2></span>
+              <span data-custom-class="heading_1"><h2>9. DO WE COLLECT INFORMATION FROM MINORS?</h2></span>
             </strong>
           </span>
         </div>
@@ -361,11 +431,11 @@ export default function PrivacyPolicy() {
 
         <div style={{ lineHeight: 1.5 }}><br /></div>
 
-        {/* Section 9 */}
+        {/* Section 10 */}
         <div style={{ lineHeight: 1.5 }}>
           <span style={{ color: "rgb(0, 0, 0)", fontSize: 15 }}>
             <strong>
-              <span data-custom-class="heading_1"><h2>9. HOW CAN YOU CONTACT US ABOUT THIS POLICY?</h2></span>
+              <span data-custom-class="heading_1"><h2>10. HOW CAN YOU CONTACT US ABOUT THIS POLICY?</h2></span>
             </strong>
           </span>
         </div>
@@ -397,11 +467,11 @@ export default function PrivacyPolicy() {
 
         <div style={{ lineHeight: 1.5 }}><br /></div>
 
-        {/* Section 10 */}
+        {/* Section 11 */}
         <div style={{ lineHeight: 1.5 }}>
           <span style={{ color: "rgb(0, 0, 0)", fontSize: 15 }}>
             <strong>
-              <span data-custom-class="heading_1"><h2>10. HOW CAN YOU REVIEW, UPDATE, OR DELETE THE DATA WE COLLECT FROM YOU?</h2></span>
+              <span data-custom-class="heading_1"><h2>11. HOW CAN YOU REVIEW, UPDATE, OR DELETE THE DATA WE COLLECT FROM YOU?</h2></span>
             </strong>
           </span>
         </div>

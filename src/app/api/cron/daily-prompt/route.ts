@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma/prisma";
-import { sendSMS } from "@/lib/twilio/sms";
+import { createMomentForPartnership } from "@/src/actions/moments";
 
 export async function GET(request: Request) {
   const authHeader = request.headers.get("authorization");
@@ -49,32 +49,11 @@ export async function GET(request: Request) {
 
       if (!nextPrompt) continue;
 
-      // Create moment + response slots
-      await prisma.$transaction(async (tx) => {
-        const moment = await tx.moment.create({
-          data: {
-            prompt_id: nextPrompt.prompt_id,
-            partnership_id: partnership.partnership_id,
-          },
-        });
-
-        await tx.response.createMany({
-          data: [
-            { responder_id: partnership.partner1_id, moment_id: moment.moment_id },
-            { responder_id: partnership.partner2_id, moment_id: moment.moment_id },
-          ],
-        });
-      });
-
+      await createMomentForPartnership(partnership, nextPrompt);
       momentsCreated++;
-
-      // Send SMS to both partners
-      for (const p of [partnership.partner1, partnership.partner2]) {
-        if (p.phone) {
-          await sendSMS(p.phone, `Your daily Moment is ready: "${nextPrompt.prompt.content}"`);
-          notificationsSent++;
-        }
-      }
+      notificationsSent += [partnership.partner1, partnership.partner2].filter(
+        (p) => p.phone
+      ).length;
     } catch (err) {
       console.error(`Failed to process partnership ${partnership.partnership_id}:`, err);
     }

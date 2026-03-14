@@ -45,7 +45,7 @@ export default function LandingPage() {
             height={20}
             className="shrink-0"
           />
-          Get Started
+          Sign in
         </Button>
       </motion.div>
 
