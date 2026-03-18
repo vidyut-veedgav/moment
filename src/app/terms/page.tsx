@@ -465,6 +465,15 @@ export default function TermsAndConditions() {
             </span>
           </span>
         </div>
+        <div style={{ lineHeight: 1.5 }}>
+          <span style={{ fontSize: 15, color: "rgb(89, 89, 89)" }}>
+            <span data-custom-class="body_text">
+              <a data-custom-class="link" href="mailto:vidyut.veedgav@gmail.com">
+                vidyut.veedgav@gmail.com
+              </a>
+            </span>
+          </span>
+        </div>
       </div>
     </div>
   );
