@@ -10,6 +10,7 @@ import { updatePhone } from "@/src/actions/auth";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { MessageCircle } from "lucide-react";
+import Link from "next/link";
 
 function formatToE164(raw: string): string {
   const digits = raw.replace(/[^\d+]/g, "");
@@ -90,6 +91,22 @@ export default function OnboardingPage() {
             required
           />
 
+          {/* SMS consent */}
+          <div className="flex items-start gap-3">
+            <Checkbox
+              id="sms-consent"
+              checked={smsConsent}
+              onCheckedChange={(checked) => setSmsConsent(checked === true)}
+              className="mt-0.5 shrink-0"
+            />
+            <Label
+              htmlFor="sms-consent"
+              className="text-xs text-muted-foreground leading-relaxed cursor-pointer"
+            >
+              I agree to receive SMS notifications from Moment. Msg &amp; data rates may apply. Reply STOP to opt out.
+            </Label>
+          </div>
+
           {/* Submit */}
           <Button
             type="submit"
@@ -102,38 +119,19 @@ export default function OnboardingPage() {
         </form>
       </motion.div>
 
-      {/* Legal consent — pinned to bottom */}
+      {/* Terms / Privacy — pinned to bottom */}
       <motion.div
-        className="fixed bottom-0 left-0 right-0 z-10 px-6 pb-8 pt-5 bg-gradient-to-t from-background via-background/95 to-transparent"
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}
+        className="fixed bottom-8 flex gap-4 text-xs text-muted-foreground/60 z-10"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.5 }}
       >
-        <div className="flex items-start gap-3 max-w-sm mx-auto">
-          <Checkbox
-            id="sms-consent"
-            checked={smsConsent}
-            onCheckedChange={(checked) => setSmsConsent(checked === true)}
-            className="mt-0.5 shrink-0"
-          />
-          <Label
-            htmlFor="sms-consent"
-            className="text-xs text-muted-foreground leading-relaxed cursor-pointer"
-          >
-            By checking this box, I agree to receive recurring SMS notifications
-            from Moment, including daily prompt releases and partner activity
-            alerts. Message frequency varies (up to 3 messages per day). Note that message
-            and data rates may apply and you can reply STOP to opt out at any time.{" "}
-            <a href="/terms" className="underline hover:text-foreground transition-colors">
-              Terms of Service
-            </a>{" "}
-            and{" "}
-            <a href="/privacy" className="underline hover:text-foreground transition-colors">
-              Privacy Policy
-            </a>
-            .
-          </Label>
-        </div>
+        <Link href="/terms" className="hover:text-muted-foreground transition-colors">
+          Terms
+        </Link>
+        <Link href="/privacy" className="hover:text-muted-foreground transition-colors">
+          Privacy
+        </Link>
       </motion.div>
     </div>
   );

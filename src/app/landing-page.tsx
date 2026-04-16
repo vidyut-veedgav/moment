@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { signIn } from "@/src/actions/auth";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 
 const features = [
   { num: "01", title: "Respond", desc: "Answer a daily prompt honestly and independently" },
@@ -68,6 +69,20 @@ export default function LandingPage() {
           </motion.div>
         ))}
       </div>
+
+      <motion.div
+        className="flex gap-4 text-xs text-muted-foreground/60"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 1.1 }}
+      >
+        <Link href="/terms" className="hover:text-muted-foreground transition-colors">
+          Terms
+        </Link>
+        <Link href="/privacy" className="hover:text-muted-foreground transition-colors">
+          Privacy
+        </Link>
+      </motion.div>
     </div>
   );
 }

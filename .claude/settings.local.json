@@ -14,11 +14,16 @@
       "Bash(grep:*)",
       "Bash(cd /c/Users/Owner/Projects/moment && npm run build 2>&1)",
       "mcp__supabase__get_advisors",
-      "mcp__supabase__execute_sql"
+      "mcp__supabase__execute_sql",
+      "mcp__supabase__list_projects",
+      "mcp__supabase__list_tables"
     ]
   },
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "shadcn"
-  ]
+  ],
+  "enabledPlugins": {
+    "frontend-design@claude-code-plugins": true
+  }
 }
