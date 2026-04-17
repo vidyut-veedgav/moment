@@ -16,7 +16,10 @@
       "mcp__supabase__get_advisors",
       "mcp__supabase__execute_sql",
       "mcp__supabase__list_projects",
-      "mcp__supabase__list_tables"
+      "mcp__supabase__list_tables",
+      "mcp__shadcn__list_items_in_registries",
+      "mcp__supabase__get_project",
+      "Bash(npx tsc *)"
     ]
   },
   "enableAllProjectMcpServers": true,

@@ -1,71 +1,31 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { updatePhone } from "@/src/actions/auth";
-import { toast } from "sonner";
-import { motion } from "framer-motion";
 import { MessageCircle } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
+import logo from "@/assets/logo.png";
 
-function formatToE164(raw: string): string {
-  const digits = raw.replace(/[^\d+]/g, "");
-  if (digits.startsWith("+")) return digits;
-  if (digits.length === 10) return `+1${digits}`;
-  if (digits.length === 11 && digits.startsWith("1")) return `+${digits}`;
-  return `+${digits}`;
-}
-
-export default function OnboardingPage() {
-  const router = useRouter();
+export default function SmsFlowPage() {
   const [phone, setPhone] = useState("");
   const [smsConsent, setSmsConsent] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const formatted = formatToE164(phone);
-
-    if (!/^\+[1-9]\d{1,14}$/.test(formatted)) {
-      toast.error("Please enter a valid phone number.");
-      return;
-    }
-
-    if (!smsConsent) {
-      toast.error("You must agree to receive text messages to continue.");
-      return;
-    }
-
-    setLoading(true);
-    try {
-      await updatePhone(formatted, smsConsent);
-      router.refresh();
-    } catch {
-      toast.error("Failed to save phone number.");
-      setLoading(false);
-    }
-  }
 
   return (
-    <div className="fixed inset-0 flex flex-col items-center justify-center px-6">
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-background/60 backdrop-blur-md" />
+    <div className="min-h-screen flex flex-col items-center justify-center px-6 py-12">
+      <div className="w-full max-w-lg flex flex-col gap-8">
+        {/* Logo */}
+        <div className="flex justify-center">
+          <Link href="/">
+            <Image src={logo} alt="Moment" width={56} height={56} priority />
+          </Link>
+        </div>
 
-      {/* Modal card */}
-      <motion.div
-        className="relative z-10 w-full max-w-lg flex flex-col gap-8"
-        initial={{ opacity: 0, scale: 0.96, y: 16 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
-      >
-        <form
-          onSubmit={handleSubmit}
-          className="rounded-2xl border bg-card shadow-xl p-10 flex flex-col gap-7"
-        >
+        {/* Card */}
+        <div className="rounded-2xl border bg-card shadow-xl p-10 flex flex-col gap-7">
           {/* Icon + heading */}
           <div className="flex flex-col items-center gap-4 text-center">
             <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
@@ -73,7 +33,7 @@ export default function OnboardingPage() {
             </div>
             <div className="flex flex-col gap-1.5">
               <h1 className="font-display font-bold text-2xl tracking-tight">
-                One last step
+                SMS Notifications
               </h1>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Add your phone number and we&apos;ll let you know when your daily prompt is ready and when your partner has responded.
@@ -91,7 +51,6 @@ export default function OnboardingPage() {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               className="h-12 text-base text-center tracking-wide"
-              required
             />
           </div>
 
@@ -113,17 +72,17 @@ export default function OnboardingPage() {
 
           {/* Submit */}
           <Button
-            type="submit"
+            type="button"
             size="lg"
             className="h-12 rounded-xl text-base"
-            disabled={loading || !phone.trim() || !smsConsent}
+            disabled={!phone.trim() || !smsConsent}
           >
-            {loading ? "Saving..." : "Continue"}
+            Continue
           </Button>
-        </form>
+        </div>
 
         {/* Terms / Privacy */}
-        <div className="flex justify-center gap-6 text-sm text-muted-foreground/80 z-10">
+        <div className="flex justify-center gap-6 text-sm text-muted-foreground">
           <Link href="/terms" className="underline hover:text-foreground transition-colors">
             Terms of Service
           </Link>
@@ -131,7 +90,7 @@ export default function OnboardingPage() {
             Privacy Policy
           </Link>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }

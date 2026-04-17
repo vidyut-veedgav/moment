@@ -22,6 +22,63 @@ export async function signIn() {
   redirect(data.url);
 }
 
+async function redirectAfterEmailAuth(authId: string) {
+  let partner = await prisma.partner.findUnique({ where: { auth_id: authId } });
+  if (!partner) return; // shouldn't happen — caller must upsert first
+
+  if (!partner.phone) {
+    redirect("/onboarding");
+  }
+
+  const partnership = await prisma.partnership.findFirst({
+    where: {
+      OR: [{ partner1_id: partner.partner_id }, { partner2_id: partner.partner_id }],
+    },
+  });
+
+  redirect(partnership ? "/home" : "/partnership");
+}
+
+export async function signUpWithEmail(email: string, password: string) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.auth.signUp({ email, password });
+
+  if (error) throw new Error(error.message);
+  if (!data.user) throw new Error("Sign up failed. Please try again.");
+
+  const firstName = email.split("@")[0];
+
+  await prisma.partner.upsert({
+    where: { auth_id: data.user.id },
+    update: {},
+    create: { auth_id: data.user.id, first_name: firstName, last_name: "" },
+  });
+
+  await redirectAfterEmailAuth(data.user.id);
+}
+
+export async function signInWithEmail(email: string, password: string) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+  if (error) throw new Error(error.message);
+  if (!data.user) throw new Error("Sign in failed. Please try again.");
+
+  await prisma.partner.upsert({
+    where: { auth_id: data.user.id },
+    update: {},
+    create: {
+      auth_id: data.user.id,
+      first_name: data.user.email?.split("@")[0] ?? "User",
+      last_name: "",
+    },
+  });
+
+  await redirectAfterEmailAuth(data.user.id);
+}
+
 export async function signOut() {
   const supabase = await createClient();
   await supabase.auth.signOut();
