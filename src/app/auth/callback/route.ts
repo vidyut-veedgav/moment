@@ -41,17 +41,22 @@ export async function GET(request: Request) {
     });
   }
 
-  // Redirect to onboarding if phone not set
-  if (!partner.phone) {
-    return NextResponse.redirect(`${origin}/onboarding`);
-  }
-
-  // Check for pending invite cookie
+  // Consume pending invite cookie here (Route Handler can modify cookies; Server Components cannot)
   const cookieStore = await cookies();
   const pendingInvite = cookieStore.get("pending_invite")?.value;
-
   if (pendingInvite) {
     cookieStore.delete("pending_invite");
+  }
+
+  // Redirect to onboarding if phone not set, carrying invite via URL param
+  if (!partner.phone) {
+    const dest = pendingInvite
+      ? `${origin}/onboarding?invite=${pendingInvite}`
+      : `${origin}/onboarding`;
+    return NextResponse.redirect(dest);
+  }
+
+  if (pendingInvite) {
     return NextResponse.redirect(`${origin}/invite/${pendingInvite}`);
   }
 

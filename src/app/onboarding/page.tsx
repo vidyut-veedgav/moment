@@ -1,20 +1,21 @@
 import { getPartner } from "@/src/actions/auth";
 import { getMyPartnership } from "@/src/actions/partnerships";
 import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
 import OnboardingPage from "@/src/app/onboarding/onboarding-page";
 
-export default async function Onboarding() {
+export default async function Onboarding({
+  searchParams,
+}: {
+  searchParams: Promise<{ invite?: string }>;
+}) {
   const partner = await getPartner();
   if (!partner) redirect("/");
 
   if (partner.phone) {
-    const cookieStore = await cookies();
-    const pendingInvite = cookieStore.get("pending_invite")?.value;
+    const { invite } = await searchParams;
 
-    if (pendingInvite) {
-      cookieStore.delete("pending_invite");
-      redirect(`/invite/${pendingInvite}`);
+    if (invite) {
+      redirect(`/invite/${invite}`);
     }
 
     const partnership = await getMyPartnership();
