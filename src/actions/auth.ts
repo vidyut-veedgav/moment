@@ -96,7 +96,7 @@ export const getPartner = cache(async () => {
   });
 });
 
-export async function updatePhone(phone: string) {
+export async function updatePhone(phone: string, smsConsent: boolean) {
   const partner = await getPartner();
   if (!partner) throw new Error("Not authenticated");
 
